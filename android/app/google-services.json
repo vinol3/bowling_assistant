@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "806765813970",
+    "project_id": "bowling-assistant",
+    "storage_bucket": "bowling-assistant.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:806765813970:android:8a743cfa489ba25e7d8d0b",
+        "android_client_info": {
+          "package_name": "com.example.bowling_assistant"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACy7nmf277jxllntBQ9d7pr8vY4aVAVtw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

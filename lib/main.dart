@@ -1,15 +1,25 @@
-import 'package:bowling_assistant/screens/calibration_screen.dart';
-import 'package:bowling_assistant/screens/home_screen.dart';
-import 'package:bowling_assistant/screens/record_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+import 'auth/auth_gate.dart';
+
+import 'package:bowling_assistant/screens/calibration_screen.dart';
+import 'package:bowling_assistant/screens/record_screen.dart';
 import 'package:bowling_assistant/screens/import_screen.dart';
 import 'package:bowling_assistant/screens/analysis_screen.dart';
 import 'package:bowling_assistant/screens/result_screen.dart';
 import 'package:bowling_assistant/screens/compare_screen.dart';
 import 'package:bowling_assistant/screens/settings_screen.dart';
 
-void main() {
-  runApp(MainApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  runApp(const MainApp());
 }
 
 class MainApp extends StatelessWidget {
@@ -23,9 +33,10 @@ class MainApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
         useMaterial3: true,
       ),
-      initialRoute: '/',
+
+      home: const AuthGate(),
+
       routes: {
-        '/': (context) => HomeScreen(),
         '/calibration': (context) => CalibrationScreen(),
         '/record': (context) => RecordScreen(),
         '/import': (context) => ImportScreen(),
