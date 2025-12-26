@@ -83,4 +83,5 @@ class DefaultFirebaseOptions {
     authDomain: 'bowling-assistant.firebaseapp.com',
     storageBucket: 'bowling-assistant.firebasestorage.app',
   );
+
 }
