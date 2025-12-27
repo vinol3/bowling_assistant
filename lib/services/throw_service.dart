@@ -20,4 +20,22 @@ class ThrowService {
     
     debugPrint('DEBUG: Throw saved for user ${user.uid}');
   }
+
+  static Stream<List<BowlingThrow>> throwsStream() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return const Stream.empty();
+
+    return FirebaseFirestore.instance
+      .collection('users')
+      .doc(user.uid)
+      .collection('throws')
+      .orderBy('createdAt', descending: true)
+      .snapshots()
+      .map(
+        (snapshot) => snapshot.docs
+            .map((doc) => BowlingThrow.fromMap(doc.id, doc.data()))
+            .toList(),
+      );
+  }
+
 }

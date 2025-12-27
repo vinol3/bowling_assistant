@@ -33,6 +33,11 @@ class ImportScreen extends StatelessWidget {
     final impactAngleCtrl = TextEditingController();
     final launchSpeedCtrl = TextEditingController();
     final impactSpeedCtrl = TextEditingController();
+    final foulLineCtrl = TextEditingController();
+    final arrowsCtrl = TextEditingController();
+    final entryBoardCtrl = TextEditingController();
+    final breakpointBoardCtrl = TextEditingController();
+    final breakpointDistanceCtrl = TextEditingController();
 
     showDialog(
       context: context,
@@ -41,10 +46,16 @@ class ImportScreen extends StatelessWidget {
         content: SingleChildScrollView(
           child: Column(
             children: [
-              _numberField('Launch Angle', launchAngleCtrl),
-              _numberField('Impact Angle', impactAngleCtrl),
-              _numberField('Launch Speed', launchSpeedCtrl),
-              _numberField('Impact Speed', impactSpeedCtrl),
+              _numberField('Launch Angle (°)', launchAngleCtrl),
+              _numberField('Impact Angle (°)', impactAngleCtrl),
+              _numberField('Launch Speed (m/s)', launchSpeedCtrl),
+              _numberField('Impact Speed (m/s)', impactSpeedCtrl),
+              const Divider(),
+              _numberField('Foul Line (board)', foulLineCtrl),
+              _numberField('Arrows (board)', arrowsCtrl),
+              _numberField('Entry Board', entryBoardCtrl),
+              _numberField('Breakpoint Board', breakpointBoardCtrl),
+              _numberField('Breakpoint Distance', breakpointDistanceCtrl),
             ],
           ),
         ),
@@ -61,6 +72,12 @@ class ImportScreen extends StatelessWidget {
                 impactAngle: double.parse(impactAngleCtrl.text),
                 launchSpeed: double.parse(launchSpeedCtrl.text),
                 impactSpeed: double.parse(impactSpeedCtrl.text),
+                foulLine: _parseNullable(foulLineCtrl.text),
+                arrows: _parseNullable(arrowsCtrl.text),
+                entryBoard: _parseNullable(entryBoardCtrl.text),
+                breackpointBoard: _parseNullable(breakpointBoardCtrl.text),
+                breackpointDistance:
+                    _parseNullable(breakpointDistanceCtrl.text),
                 createdAt: DateTime.now(),
               );
 
@@ -90,5 +107,10 @@ class ImportScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  double? _parseNullable(String value) {
+    if (value.trim().isEmpty) return null;
+    return double.tryParse(value);
   }
 }
