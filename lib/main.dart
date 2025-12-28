@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-
 import 'auth/auth_gate.dart';
+import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:bowling_assistant/screens/calibration_screen.dart';
 import 'package:bowling_assistant/screens/record_screen.dart';
@@ -12,12 +14,19 @@ import 'package:bowling_assistant/screens/result_screen.dart';
 import 'package:bowling_assistant/screens/compare_screen.dart';
 import 'package:bowling_assistant/screens/settings_screen.dart';
 
-void main() async {
+
+late List<CameraDescription> cameras;
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+    cameras = await availableCameras();
+  }
 
   runApp(const MainApp());
 }
