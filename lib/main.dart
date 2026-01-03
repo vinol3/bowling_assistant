@@ -1,19 +1,21 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:camera/camera.dart';
+
 import 'firebase_options.dart';
 import 'auth/auth_gate.dart';
-import 'package:camera/camera.dart';
-import 'package:flutter/foundation.dart';
 
-import 'package:bowling_assistant/screens/calibration_screen.dart';
-import 'package:bowling_assistant/screens/record_screen.dart';
-import 'package:bowling_assistant/screens/import_screen.dart';
-import 'package:bowling_assistant/screens/analysis_screen.dart';
-import 'package:bowling_assistant/screens/result_screen.dart';
-import 'package:bowling_assistant/screens/compare_screen.dart';
-import 'package:bowling_assistant/screens/settings_screen.dart';
+import 'theme/app_theme.dart';
 
+import 'screens/calibration_screen.dart';
+import 'screens/record_screen.dart';
+import 'screens/import_screen.dart';
+import 'screens/analysis_screen.dart';
+import 'screens/result_screen.dart';
+import 'screens/compare_screen.dart';
+import 'screens/settings_screen.dart';
 
 late List<CameraDescription> cameras;
 
@@ -37,22 +39,52 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Bowling Stats',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
-        useMaterial3: true,
-      ),
-
+      debugShowCheckedModeBanner: false,
+      title: 'Bowling Assistant',
+      theme: AppTheme.darkTheme,
       home: const AuthGate(),
+      onGenerateRoute: (settings) {
+        Widget page;
 
-      routes: {
-        '/calibration': (context) => CalibrationScreen(),
-        '/record': (context) => RecordScreen(),
-        '/import': (context) => ImportScreen(),
-        '/analysis': (context) => AnalysisScreen(),
-        '/results': (context) => ResultsScreen(),
-        '/compare': (context) => CompareScreen(),
-        '/settings': (context) => SettingsScreen(),
+        switch (settings.name) {
+          case '/calibration':
+            page = const CalibrationScreen();
+            break;
+          case '/record':
+            page = const RecordScreen();
+            break;
+          case '/import':
+            page = const ImportScreen();
+            break;
+          case '/analysis':
+            page = const AnalysisScreen();
+            break;
+          case '/results':
+            page = const ResultsScreen();
+            break;
+          case '/compare':
+            page = const CompareScreen();
+            break;
+          case '/settings':
+            page = const SettingsScreen();
+            break;
+          default:
+            page = const AuthGate();
+        }
+
+        return PageRouteBuilder(
+          transitionDuration: const Duration(milliseconds: 250),
+          pageBuilder: (_, animation, __) => FadeTransition(
+            opacity: animation,
+            child: SlideTransition(
+              position: Tween(
+                begin: const Offset(0, 0.04),
+                end: Offset.zero,
+              ).animate(animation),
+              child: page,
+            ),
+          ),
+        );
       },
     );
   }
