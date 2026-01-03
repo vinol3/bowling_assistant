@@ -1,4 +1,9 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 import '../models/bowling_throw.dart';
 import '../services/throw_service.dart';
 
@@ -13,6 +18,12 @@ class ImportScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            ElevatedButton.icon(
+              icon: const Icon(Icons.video_library),
+              label: const Text('Load Video'),
+              onPressed: () => _pickVideo(context),
+            ),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () => Navigator.pushNamed(context, '/analysis'),
               child: const Text('Run Analysis'),
@@ -28,6 +39,40 @@ class ImportScreen extends StatelessWidget {
     );
   }
 
+  
+  Future<void> _pickVideo(BuildContext context) async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.video,
+      allowMultiple: false,
+    );
+
+    if (result == null) return; // user canceled
+
+    if (kIsWeb) {
+      final bytes = result.files.single.bytes;
+      final name = result.files.single.name;
+
+      debugPrint('Picked video (web): $name');
+      debugPrint('Bytes length: ${bytes?.length}');
+    } else {
+      final path = result.files.single.path!;
+      final file = File(path);
+
+      debugPrint('Picked video path: $path');
+      debugPrint('File size: ${await file.length()} bytes');
+
+      // TODO:
+      // Pass `path` into video analysis
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Video selected successfully')),
+    );
+  }
+
+  // =======================
+  // DEBUG DIALOG
+  // =======================
   void _showDebugDialog(BuildContext context) {
     final launchAngleCtrl = TextEditingController();
     final impactAngleCtrl = TextEditingController();
@@ -75,7 +120,8 @@ class ImportScreen extends StatelessWidget {
                 foulLine: _parseNullable(foulLineCtrl.text),
                 arrows: _parseNullable(arrowsCtrl.text),
                 entryBoard: _parseNullable(entryBoardCtrl.text),
-                breackpointBoard: _parseNullable(breakpointBoardCtrl.text),
+                breackpointBoard:
+                    _parseNullable(breakpointBoardCtrl.text),
                 breackpointDistance:
                     _parseNullable(breakpointDistanceCtrl.text),
                 createdAt: DateTime.now(),
@@ -95,6 +141,9 @@ class ImportScreen extends StatelessWidget {
     );
   }
 
+  // =======================
+  // HELPERS
+  // =======================
   Widget _numberField(String label, TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
