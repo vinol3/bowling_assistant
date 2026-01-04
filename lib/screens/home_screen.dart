@@ -21,19 +21,19 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: ListView(
+          padding: const EdgeInsets.all(16),
           children: [
             _ActionCard(
-              icon: Icons.tune,
-              title: 'Calibrate Lane',
-              subtitle: 'Set reference points',
-              onTap: () => Navigator.pushNamed(context, '/calibration'),
+              icon: Icons.auto_stories_outlined,
+              title: 'Recorded Throws',
+              subtitle: 'See all recorded throws',
+              onTap: () => Navigator.pushNamed(context, '/analysis'),
             ),
             const SizedBox(height: 16),
             _ActionCard(
               icon: Icons.videocam,
-              title: 'Record Throw',
+              title: 'Record Video',
               subtitle: 'Capture a new attempt',
               onTap: () => Navigator.pushNamed(context, '/record'),
             ),
@@ -43,6 +43,13 @@ class HomeScreen extends StatelessWidget {
               title: 'Import Video',
               subtitle: 'Analyze existing footage',
               onTap: () => Navigator.pushNamed(context, '/import'),
+            ),
+             const SizedBox(height: 16),
+            _ActionCard(
+              icon: Icons.analytics_outlined,
+              title: 'Stats',
+              subtitle: 'Aggregated throw statistics',
+              onTap: () => Navigator.pushNamed(context, '/results'),
             ),
             const SizedBox(height: 16),
             _ActionCard(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../theme/app_text_styles.dart';
+import '../theme/app_colors.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -13,7 +15,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final passwordController = TextEditingController();
   bool isLoading = false;
 
-  Future<void> login() async {
+  Future<void> _login() async {
     try {
       setState(() => isLoading = true);
       await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -21,13 +23,13 @@ class _AuthScreenState extends State<AuthScreen> {
         password: passwordController.text.trim(),
       );
     } catch (e) {
-      showMessage(e.toString());
+      _showMessage(e.toString());
     } finally {
       setState(() => isLoading = false);
     }
   }
 
-  Future<void> signUp() async {
+  Future<void> _signUp() async {
     try {
       setState(() => isLoading = true);
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -35,13 +37,13 @@ class _AuthScreenState extends State<AuthScreen> {
         password: passwordController.text.trim(),
       );
     } catch (e) {
-      showMessage(e.toString());
+      _showMessage(e.toString());
     } finally {
       setState(() => isLoading = false);
     }
   }
 
-  void showMessage(String message) {
+  void _showMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );
@@ -52,67 +54,111 @@ class _AuthScreenState extends State<AuthScreen> {
     return Scaffold(
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(32.0),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Title
-                Text(
-                  "Login or create an account",
-                  style: Theme.of(context).textTheme.headlineMedium,
+          padding: const EdgeInsets.all(24),
+          child: TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0, end: 1),
+            duration: const Duration(milliseconds: 400),
+            builder: (context, value, child) {
+              return Opacity(
+                opacity: value,
+                child: Transform.translate(
+                  offset: Offset(0, 20 * (1 - value)),
+                  child: child,
                 ),
-                const SizedBox(height: 40),
-
-                // Email
-                TextField(
-                  controller: emailController,
-                  decoration: const InputDecoration(
-                    labelText: "Email",
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // Password
-                TextField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: "Password",
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 30),
-
-                // Buttons
-                isLoading
-                    ? const CircularProgressIndicator()
-                    : Column(
-                        children: [
-                          // LOGIN
-                          SizedBox(
-                            width: double.infinity,
-                            child: FilledButton(
-                              onPressed: login,
-                              child: const Text("Log In"),
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-
-                          // SIGN UP
-                          SizedBox(
-                            width: double.infinity,
-                            child: OutlinedButton(
-                              onPressed: signUp,
-                              child: const Text("Sign Up"),
-                            ),
-                          ),
-                        ],
+              );
+            },
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.auto_graph_rounded,
+                        size: 64,
+                        color: AppColors.primary,
                       ),
-              ],
+                      const SizedBox(height: 16),
+                      Text(
+                        'Bowling Assistant',
+                        style: AppTextStyles.headline,
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Log in or create an account',
+                        style: AppTextStyles.bodyMuted,
+                      ),
+                      const SizedBox(height: 32),
+
+                      _InputField(
+                        controller: emailController,
+                        label: 'Email',
+                      ),
+                      const SizedBox(height: 16),
+                      _InputField(
+                        controller: passwordController,
+                        label: 'Password',
+                        obscure: true,
+                      ),
+                      const SizedBox(height: 24),
+
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: isLoading
+                            ? const CircularProgressIndicator()
+                            : Column(
+                                children: [
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: FilledButton(
+                                      onPressed: _login,
+                                      child: const Text('Log In'),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: OutlinedButton(
+                                      onPressed: _signUp,
+                                      child: const Text('Sign Up'),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _InputField extends StatelessWidget {
+  final TextEditingController controller;
+  final String label;
+  final bool obscure;
+
+  const _InputField({
+    required this.controller,
+    required this.label,
+    this.obscure = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      obscureText: obscure,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
         ),
       ),
     );
