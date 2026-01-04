@@ -44,10 +44,60 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   void _showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (dialogContext) {
+        final animation = ModalRoute.of(dialogContext)!.animation!;
+
+        return ScaleTransition(
+          scale: CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOutBack,
+          ),
+          child: AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: const Text('Authentication Error'),
+            content: Text(
+              _humanizeFirebaseError(message),
+              style: AppTextStyles.body,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
+
+
+  String _humanizeFirebaseError(String error) {
+    if (error.contains('user-not-found')) {
+      return 'No account found for this email.';
+    }
+    if (error.contains('wrong-password')) {
+      return 'Incorrect password.';
+    }
+    if (error.contains('invalid-email')) {
+      return 'Please enter a valid email address.';
+    }
+    if (error.contains('email-already-in-use')) {
+      return 'An account with this email already exists.';
+    }
+    if (error.contains('weak-password')) {
+      return 'Password should be at least 6 characters.';
+    }
+
+    return 'Authentication failed. Please try again.';
+  }
+
+
 
   @override
   Widget build(BuildContext context) {

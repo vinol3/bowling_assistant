@@ -1,3 +1,4 @@
+import 'package:bowling_assistant/services/video_import_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../theme/app_text_styles.dart';
@@ -42,9 +43,9 @@ class HomeScreen extends StatelessWidget {
               icon: Icons.upload,
               title: 'Import Video',
               subtitle: 'Analyze existing footage',
-              onTap: () => Navigator.pushNamed(context, '/import'),
+              onTap: () => VideoImportService.pickVideo(context),
             ),
-             const SizedBox(height: 16),
+            const SizedBox(height: 16),
             _ActionCard(
               icon: Icons.analytics_outlined,
               title: 'Stats',
