@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../theme/app_text_styles.dart';
+import '../theme/app_colors.dart';
 
 class ResultsScreen extends StatelessWidget {
   const ResultsScreen({super.key});
@@ -6,23 +8,56 @@ class ResultsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Results')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('Results Placeholder'),
-            ElevatedButton(
-              onPressed: () => Navigator.pushNamed(context, '/compare'),
-              child: const Text('Compare Throws'),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.popUntil(context, ModalRoute.withName('/')),
-              child: const Text('Back to Home'),
-            ),
-          ],
+      appBar: AppBar(
+        title: const Text('Stats'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: TweenAnimationBuilder<double>(
+          tween: Tween(begin: 0, end: 1),
+          duration: const Duration(milliseconds: 400),
+          builder: (context, value, child) {
+            return Opacity(
+              opacity: value,
+              child: Transform.translate(
+                offset: Offset(0, 16 * (1 - value)),
+                child: child,
+              ),
+            );
+          },
+          child: Column(
+            children: [
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    children: [
+                      const Icon(
+                        Icons.analytics_outlined,
+                        size: 56,
+                        color: AppColors.primary,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Statistics Coming Soon',
+                        style: AppTextStyles.sectionTitle,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Aggregated throw insights and trends will appear here.',
+                        style: AppTextStyles.bodyMuted,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+            ],
+          ),
         ),
       ),
     );
   }
 }
+

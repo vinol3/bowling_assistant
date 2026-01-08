@@ -65,6 +65,8 @@ class AnalysisApiService {
         jsonDecode(responseBody) as Map<String, dynamic>;
 
     final String id = _uuid.v4();
-    return BowlingThrow.fromMap(id, data);
+    BowlingThrow throwData = BowlingThrow.fromMap(id, data);
+    throwData.createdAt = DateTime.now();
+    return throwData;
   }
 }

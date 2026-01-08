@@ -99,7 +99,9 @@ class _ThrowCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _formatFullDateTime(throwData.createdAt!),
+                      throwData.createdAt != null
+                          ? _formatFullDateTime(throwData.createdAt!)
+                          : '--',
                       style: AppTextStyles.caption,
                     ),
                     const SizedBox(height: 6),

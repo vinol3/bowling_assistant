@@ -9,7 +9,7 @@ class BowlingThrow {
   final double? entryBoard;
   final double? breackpointBoard;
   final double? breackpointDistance;
-  final DateTime? createdAt;
+  DateTime? createdAt;
 
   BowlingThrow({
     required this.id,
@@ -52,7 +52,7 @@ class BowlingThrow {
       entryBoard: map['entryBoard'] != null ? (map['entryBoard'] as num).toDouble() : null,
       breackpointBoard: map['breackpointBoard'] != null ? (map['breackpointBoard'] as num).toDouble() : null,
       breackpointDistance: map['breackpointDistance'] != null ? (map['breackpointDistance'] as num).toDouble() : null,
-      createdAt: DateTime.parse(map['createdAt']),
+      createdAt: map['createdAt'] != null ? DateTime.parse(map['createdAt'] as String) : null,
     );
   }
 }
