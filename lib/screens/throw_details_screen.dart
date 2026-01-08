@@ -25,7 +25,7 @@ class ThrowDetailScreen extends StatelessWidget {
             children: [
               _RowItem(
                 label: 'Date & Time',
-                value: _formatFullDateTime(throwData.createdAt),
+                value: _formatFullDateTime(throwData.createdAt!),
               ),
             ],
           ),

@@ -9,7 +9,7 @@ class BowlingThrow {
   final double? entryBoard;
   final double? breackpointBoard;
   final double? breackpointDistance;
-  final DateTime createdAt;
+  final DateTime? createdAt;
 
   BowlingThrow({
     required this.id,
@@ -36,7 +36,7 @@ class BowlingThrow {
       'entryBoard': entryBoard,
       'breackpointBoard': breackpointBoard,
       'breackpointDistance': breackpointDistance,
-      'createdAt': createdAt.toIso8601String(),
+      'createdAt': createdAt?.toIso8601String(),
     };
   }
 
