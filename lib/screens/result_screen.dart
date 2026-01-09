@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import '../theme/app_text_styles.dart';
 import '../theme/app_colors.dart';
+import '../models/bowling_throw.dart';
 import '../models/throw_stats.dart';
+import '../services/throw_service.dart';
+import '../services/stats_service.dart';
 
-//TODO calculate stats HERE
 class ResultsScreen extends StatelessWidget {
-  final ThrowStats stats;
-
-  const ResultsScreen({
-    super.key,
-    required this.stats,
-  });
+  const ResultsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,54 +18,85 @@ class ResultsScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: TweenAnimationBuilder<double>(
-          tween: Tween(begin: 0, end: 1),
-          duration: const Duration(milliseconds: 400),
-          builder: (context, value, child) {
-            return Opacity(
-              opacity: value,
-              child: Transform.translate(
-                offset: Offset(0, 16 * (1 - value)),
-                child: child,
+        child: StreamBuilder<List<BowlingThrow>>(
+          stream: ThrowService.throwsStream(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            if (snapshot.hasError) {
+              return Center(
+                child: Text(
+                  'Failed to load statistics',
+                  style: AppTextStyles.bodyMuted,
+                ),
+              );
+            }
+
+            final throws = snapshot.data ?? [];
+
+            if (throws.isEmpty) {
+              return const _EmptyState();
+            }
+
+            final ThrowStats stats = StatsService.calculate(throws);
+
+            return TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: 1),
+              duration: const Duration(milliseconds: 400),
+              builder: (context, value, child) {
+                return Opacity(
+                  opacity: value,
+                  child: Transform.translate(
+                    offset: Offset(0, 16 * (1 - value)),
+                    child: child,
+                  ),
+                );
+              },
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _StatsHeader(stats: stats),
+                    const SizedBox(height: 24),
+                    GridView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 12,
+                        crossAxisSpacing: 12,
+                        childAspectRatio: 1.15,
+                      ),
+                      children: [
+                        _StatCard(
+                          icon: Icons.confirmation_number_outlined,
+                          label: 'Total Throws',
+                          value: stats.totalThrows.toString(),
+                        ),
+                        _StatCard(
+                          icon: Icons.rocket_launch_outlined,
+                          label: 'Avg Launch Speed',
+                          value:
+                              '${stats.avgLaunchSpeed.toStringAsFixed(1)} km/h',
+                        ),
+                        _StatCard(
+                          icon: Icons.speed_outlined,
+                          label: 'Avg Impact Speed',
+                          value:
+                              '${stats.avgImpactSpeed.toStringAsFixed(1)} km/h',
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             );
           },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _StatsHeader(stats: stats),
-              const SizedBox(height: 24),
-              GridView(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 12,
-                  childAspectRatio: 1.15,
-                ),
-                children: [
-                  _StatCard(
-                    icon: Icons.confirmation_number_outlined,
-                    label: 'Total Throws',
-                    value: stats.totalThrows.toString(),
-                  ),
-                  _StatCard(
-                    icon: Icons.rocket_launch_outlined,
-                    label: 'Avg Launch Speed',
-                    value:
-                        '${stats.avgLaunchSpeed.toStringAsFixed(1)} km/h',
-                  ),
-                  _StatCard(
-                    icon: Icons.speed_outlined,
-                    label: 'Avg Impact Speed',
-                    value:
-                        '${stats.avgImpactSpeed.toStringAsFixed(1)} km/h',
-                  ),
-                ],
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -116,7 +144,6 @@ class _StatsHeader extends StatelessWidget {
   }
 }
 
-
 class _StatCard extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -156,3 +183,33 @@ class _StatCard extends StatelessWidget {
   }
 }
 
+class _EmptyState extends StatelessWidget {
+  const _EmptyState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.analytics_outlined,
+            size: 56,
+            color: AppColors.primary,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'No throws yet',
+            style: AppTextStyles.sectionTitle,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Record a throw to see statistics.',
+            style: AppTextStyles.bodyMuted,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}
