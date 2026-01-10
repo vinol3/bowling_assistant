@@ -90,6 +90,12 @@ class ResultsScreen extends StatelessWidget {
                           value:
                               '${stats.avgImpactSpeed.toStringAsFixed(1)} km/h',
                         ),
+                        _StatCard(
+                          icon: Icons.access_alarm_rounded,
+                          label: 'working on it',
+                          value:
+                              'More stats coming soon...',
+                        ),
                       ],
                     ),
                   ],
