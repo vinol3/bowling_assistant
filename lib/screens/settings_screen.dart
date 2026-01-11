@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '../theme/app_text_styles.dart';
 import '../theme/app_colors.dart';
+import '../theme/theme_controller.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final themeController = context.watch<ThemeController>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -44,9 +49,17 @@ class SettingsScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Customization options will appear here.',
+                        'Customize your experience.',
                         style: AppTextStyles.bodyMuted,
                         textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 24),
+                      SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: const Text('Dark mode'),
+                        value: themeController.isDark,
+                        onChanged: (_) =>
+                            context.read<ThemeController>().toggleTheme(),
                       ),
                     ],
                   ),

@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:camera/camera.dart';
+import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
 import 'auth/auth_gate.dart';
 
 import 'theme/app_theme.dart';
+import 'theme/theme_controller.dart';
 
 import 'screens/calibration_screen.dart';
 import 'screens/record_screen.dart';
@@ -30,7 +32,12 @@ Future<void> main() async {
     cameras = await availableCameras();
   }
 
-  runApp(const MainApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeController(),
+      child: const MainApp(),
+    ),
+  );
 }
 
 class MainApp extends StatelessWidget {
@@ -38,52 +45,60 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Bowling Assistant',
-      theme: AppTheme.darkTheme,
-      home: const AuthGate(),
-      onGenerateRoute: (settings) {
-        Widget page;
+    return Builder(
+      builder: (context) {
+        final themeController = context.watch<ThemeController>();
 
-        switch (settings.name) {
-          case '/calibration':
-            page = const CalibrationScreen();
-            break;
-          case '/record':
-            page = const RecordScreen();
-            break;
-          case '/import':
-            page = const ImportScreen();
-            break;
-          case '/analysis':
-            page = const AnalysisScreen();
-            break;
-          case '/results':
-            page = const ResultsScreen();
-            break;
-          case '/compare':
-            page = const CompareScreen();
-            break;
-          case '/settings':
-            page = const SettingsScreen();
-            break;
-          default:
-            page = const AuthGate();
-        }
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Bowling Assistant',
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: themeController.themeMode,
+          home: const AuthGate(),
+          onGenerateRoute: (settings) {
+            Widget page;
 
-        return PageRouteBuilder(
-          transitionDuration: const Duration(milliseconds: 250),
-          pageBuilder: (_, animation, __) => FadeTransition(
-            opacity: animation,
-            child: SlideTransition(
-              position: Tween(
-                begin: const Offset(0, 0.04),
-                end: Offset.zero,
-              ).animate(animation),
-              child: page,
-            ),
-          ),
+            switch (settings.name) {
+              case '/calibration':
+                page = const CalibrationScreen();
+                break;
+              case '/record':
+                page = const RecordScreen();
+                break;
+              case '/import':
+                page = const ImportScreen();
+                break;
+              case '/analysis':
+                page = const AnalysisScreen();
+                break;
+              case '/results':
+                page = const ResultsScreen();
+                break;
+              case '/compare':
+                page = const CompareScreen();
+                break;
+              case '/settings':
+                page = const SettingsScreen();
+                break;
+              default:
+                page = const AuthGate();
+            }
+
+            return PageRouteBuilder(
+              transitionDuration: const Duration(milliseconds: 250),
+              pageBuilder: (_, animation, __) => FadeTransition(
+                opacity: animation,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0, 0.04),
+                    end: Offset.zero,
+                  ).animate(animation),
+                  child: page,
+                ),
+              ),
+            );
+          },
         );
       },
     );

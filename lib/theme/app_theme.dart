@@ -9,7 +9,25 @@ class AppTheme {
       seedColor: AppColors.primary,
       brightness: Brightness.dark,
     ),
-    scaffoldBackgroundColor: AppColors.background,
+    scaffoldBackgroundColor: AppColors.darkBackground,
+    cardColor: AppColors.darkCard,
+    textTheme: const TextTheme(
+      headlineSmall: AppTextStyles.headline,
+      titleMedium: AppTextStyles.sectionTitle,
+      bodyMedium: AppTextStyles.body,
+      labelLarge: AppTextStyles.button,
+      bodySmall: AppTextStyles.caption,
+    ),
+  );
+
+  static ThemeData lightTheme = ThemeData(
+    useMaterial3: true,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColors.primary,
+      brightness: Brightness.light,
+    ),
+    scaffoldBackgroundColor: AppColors.lightBackground,
+    cardColor: AppColors.lightCard,
     textTheme: const TextTheme(
       headlineSmall: AppTextStyles.headline,
       titleMedium: AppTextStyles.sectionTitle,

@@ -1,4 +1,0 @@
-enum AppThemeMode {
-  light,
-  dark,
-}

@@ -16,6 +16,7 @@ dependencies:
   file_picker: ^10.3.8
   http: ^1.2.0
   uuid: ^4.5.2
+  provider: ^6.1.5+1
 
 dev_dependencies:
   flutter_test:
