@@ -43,7 +43,7 @@ class HomeScreen extends StatelessWidget {
               icon: Icons.upload,
               title: 'Import Video',
               subtitle: 'Analyze existing footage',
-              onTap: () => VideoImportService.pickVideo(context),
+              onTap: () => _importVideo(context),
             ),
             const SizedBox(height: 16),
             _ActionCard(
@@ -65,6 +65,25 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
+
+Future<void> _importVideo(BuildContext context) async {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => const Center(
+      child: CircularProgressIndicator(),
+    ),
+  );
+
+  try {
+    await VideoImportService.pickVideo(context);
+  } finally {
+    if (context.mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+}
+
 
 class _ActionCard extends StatelessWidget {
   final IconData icon;
